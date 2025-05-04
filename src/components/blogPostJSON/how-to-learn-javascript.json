@@ -1,0 +1,57 @@
+{
+    "id": "how-to-learn-javascript",
+    "title": "How to Learn JavaScript: A Complete Roadmap",
+    "author": "John Smith",
+    "date": "2025-05-02",
+    "readingTime": 8,
+    "categories": [
+        "Programming",
+        "JavaScript",
+        "Web Development"
+    ],
+    "content": {
+        "introduction": "JavaScript is one of the most popular programming languages in the world. Whether you want to become a web developer, create interactive websites, or build modern web applications, learning JavaScript is essential.",
+        "sections": [
+            {
+                "title": "1. Start with the Basics",
+                "content": "Begin your JavaScript journey by understanding variables, data types, operators, and control structures. These fundamentals form the backbone of your programming knowledge."
+            },
+            {
+                "title": "2. Functions and Objects",
+                "content": "Learn how to create and use functions, understand scope, and work with objects. These concepts are crucial for writing organized and reusable code."
+            },
+            {
+                "title": "3. DOM Manipulation",
+                "content": "The Document Object Model (DOM) is how JavaScript interacts with HTML. Learn to select elements, modify content, and handle events."
+            },
+            {
+                "title": "4. Modern JavaScript Features",
+                "content": "Explore ES6+ features like arrow functions, destructuring, modules, and promises. These modern features make your code more efficient and readable."
+            }
+        ],
+        "conclusion": "Learning JavaScript takes time and practice, but with dedication and the right resources, you can become proficient in this versatile language."
+    },
+    "resources": [
+        {
+            "name": "MDN Web Docs",
+            "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript"
+        },
+        {
+            "name": "JavaScript.info",
+            "url": "https://javascript.info/"
+        },
+        {
+            "name": "freeCodeCamp",
+            "url": "https://www.freecodecamp.org/"
+        }
+    ],
+    "tags": [
+        "javascript",
+        "programming",
+        "web development",
+        "coding",
+        "tutorial"
+    ],
+    "likes": 0,
+    "comments": []
+}

@@ -1,0 +1,53 @@
+{
+    "id": "mastering-css-grid",
+    "title": "Mastering CSS Grid: Modern Layout Design",
+    "author": "Emily Chen",
+    "date": "2025-05-03",
+    "readingTime": 6,
+    "categories": [
+        "CSS",
+        "Web Design",
+        "Frontend Development"
+    ],
+    "content": {
+        "introduction": "CSS Grid has transformed how we create web layouts. This guide will help you master this powerful layout system and create responsive, complex layouts with ease.",
+        "sections": [
+            {
+                "title": "1. Grid Basics",
+                "content": "Learn the fundamental concepts of CSS Grid, including grid containers, items, and how to create your first grid layout."
+            },
+            {
+                "title": "2. Grid Areas and Templates",
+                "content": "Explore grid-template-areas and grid-template-columns to create sophisticated layouts with semantic naming."
+            },
+            {
+                "title": "3. Responsive Grid Design",
+                "content": "Master techniques for creating responsive layouts using minmax(), auto-fit, and auto-fill functions."
+            },
+            {
+                "title": "4. Advanced Grid Techniques",
+                "content": "Dive into advanced concepts like grid alignment, nested grids, and combining Grid with Flexbox."
+            }
+        ],
+        "conclusion": "CSS Grid is an essential tool for modern web development. With these concepts mastered, you'll be able to create any layout you can imagine."
+    },
+    "resources": [
+        {
+            "name": "CSS Grid Guide",
+            "url": "https://css-tricks.com/snippets/css/complete-guide-grid/"
+        },
+        {
+            "name": "Grid by Example",
+            "url": "https://gridbyexample.com/"
+        }
+    ],
+    "tags": [
+        "css",
+        "web design",
+        "layout",
+        "responsive design",
+        "frontend"
+    ],
+    "likes": 0,
+    "comments": []
+}

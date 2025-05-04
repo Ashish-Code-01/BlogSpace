@@ -1,0 +1,53 @@
+{
+    "id": "typescript-essentials",
+    "title": "TypeScript Essentials: From Zero to Hero",
+    "author": "Michael Brown",
+    "date": "2025-05-04",
+    "readingTime": 12,
+    "categories": [
+        "Programming",
+        "TypeScript",
+        "JavaScript"
+    ],
+    "content": {
+        "introduction": "TypeScript adds static typing to JavaScript, making your code more robust and maintainable. Learn how to leverage TypeScript in your projects.",
+        "sections": [
+            {
+                "title": "1. Basic Types and Interfaces",
+                "content": "Understand TypeScript's type system, including basic types, interfaces, and type aliases. Learn how to define clear contracts for your code."
+            },
+            {
+                "title": "2. Classes and Inheritance",
+                "content": "Explore object-oriented programming in TypeScript, including classes, inheritance, and access modifiers."
+            },
+            {
+                "title": "3. Generics",
+                "content": "Master generic types to create flexible, reusable components and functions that work with multiple data types."
+            },
+            {
+                "title": "4. Advanced Types",
+                "content": "Dive into union types, intersection types, mapped types, and conditional types for advanced type manipulation."
+            }
+        ],
+        "conclusion": "TypeScript is an invaluable tool for building scalable applications. With these concepts mastered, you'll write safer, more maintainable code."
+    },
+    "resources": [
+        {
+            "name": "TypeScript Documentation",
+            "url": "https://www.typescriptlang.org/docs/"
+        },
+        {
+            "name": "TypeScript Playground",
+            "url": "https://www.typescriptlang.org/play"
+        }
+    ],
+    "tags": [
+        "typescript",
+        "javascript",
+        "programming",
+        "web development",
+        "static typing"
+    ],
+    "likes": 0,
+    "comments": []
+}
