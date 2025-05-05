@@ -2,37 +2,37 @@
 
 import React, { useState, useEffect } from 'react'
 import { FaFacebookF, FaTwitter, FaLinkedinIn, FaRegBookmark, FaBookmark } from 'react-icons/fa'
+import type { BlogPost } from '@/types/blog'
 
-    // Define the correct props type for Next.js 13+ pages
-    type BlogPostProps = {
-        params: {
-            slug: string;
-        };
-        searchParams?: { [key: string]: string | string[] | undefined
+type BlogPostPageProps = {
+    params: {
+        slug: string;
     };
 }
 
-const BlogPost = ({ params }: BlogPostProps) => {
-    const [blogData, setBlogData] = useState<any>(null)
+export default function BlogPost({ params }: BlogPostPageProps) {
+    const [blogData, setBlogData] = useState<BlogPost | null>(null)
     const [isBookmarked, setIsBookmarked] = useState(false)
     const [likes, setLikes] = useState(0)
     const [comment, setComment] = useState('')
     const [comments, setComments] = useState<Array<{ author: string; text: string; date: string }>>([])
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [readingTime, setReadingTime] = useState(0)
 
     useEffect(() => {
         const fetchBlogPost = async () => {
-            setIsLoading(true)
             try {
-                const post = await import(`../../../components/blogPostJSON/${params.slug}.json`)
-                setBlogData(post.default)
+                const response = await fetch(`/api/blog/${params.slug}`)
+                if (!response.ok) throw new Error('Failed to fetch blog post')
+                const data = await response.json()
+                setBlogData(data)
 
-                const words = post.default.content.introduction.split(' ').length +
-                    post.default.content.sections.reduce((acc: number, section: any) =>
-                        acc + section.content.split(' ').length, 0)
-                setReadingTime(Math.ceil(words / 200))
+                // Load saved states
+                const savedBookmark = localStorage.getItem(`bookmark-${params.slug}`)
+                if (savedBookmark) setIsBookmarked(savedBookmark === 'true')
+
+                const savedLikes = localStorage.getItem(`likes-${params.slug}`)
+                if (savedLikes) setLikes(parseInt(savedLikes, 10))
             } catch (err) {
                 console.error('Error loading blog post:', err)
                 setError('Failed to load blog post')
@@ -57,6 +57,8 @@ const BlogPost = ({ params }: BlogPostProps) => {
     const handleLike = () => {
         try {
             setLikes(prev => prev + 1)
+            // Add localStorage persistence
+            localStorage.setItem(`likes-${params.slug}`, (likes + 1).toString())
         } catch (err) {
             console.error('Error updating likes:', err)
         }
@@ -85,12 +87,24 @@ const BlogPost = ({ params }: BlogPostProps) => {
         }
     }
 
-    if (!blogData) {
-        return <div className="min-h-screen bg-gray-50 py-8">
-            <div className="container mx-auto px-4 text-center">
-                Loading...
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50 py-8">
+                <div className="container mx-auto px-4 text-center">
+                    <div className="animate-pulse">Loading...</div>
+                </div>
             </div>
-        </div>
+        )
+    }
+
+    if (error || !blogData) {
+        return (
+            <div className="min-h-screen bg-gray-50 py-8">
+                <div className="container mx-auto px-4 text-center text-red-500">
+                    {error || 'Blog post not found'}
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -107,7 +121,7 @@ const BlogPost = ({ params }: BlogPostProps) => {
                             <div className="flex items-center space-x-4">
                                 <span>Author: {blogData.author}</span>
                                 <span>Published: {blogData.date}</span>
-                                <span>{readingTime} min read</span>
+                                <span>{blogData.readingTime} min read</span>
                             </div>
                             <button
                                 onClick={handleBookmark}
@@ -239,5 +253,3 @@ const BlogPost = ({ params }: BlogPostProps) => {
         </article>
     )
 }
-
-export default BlogPost
