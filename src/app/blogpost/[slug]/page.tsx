@@ -1,75 +1,93 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { FaFacebookF, FaTwitter, FaLinkedinIn, FaRegBookmark, FaBookmark } from 'react-icons/fa'
-import type { BlogPost } from '@/types/blog'
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation'; // Import the useParams hook
+import { FaFacebookF, FaTwitter, FaLinkedinIn, FaRegBookmark, FaBookmark } from 'react-icons/fa';
 
-type BlogPostPageProps = {
-    params: {
-        slug: string;
+// Define blog post data interface
+interface BlogPostData {
+    title: string;
+    author: string;
+    date: string;
+    content: {
+        introduction: string;
+        sections: Array<{
+            title: string;
+            content: string;
+        }>;
+        conclusion?: string;
     };
+    resources?: Array<{
+        name: string;
+        url: string;
+    }>;
 }
 
-export default function BlogPost({ params }: BlogPostPageProps) {
-    const [blogData, setBlogData] = useState<BlogPost | null>(null)
-    const [isBookmarked, setIsBookmarked] = useState(false)
-    const [likes, setLikes] = useState(0)
-    const [comment, setComment] = useState('')
-    const [comments, setComments] = useState<Array<{ author: string; text: string; date: string }>>([])
-    const [isLoading, setIsLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+// No need for a separate Props interface here if you're only using useParams
+// interface Props {
+//     params: {
+//         slug: string;
+//     }
+// }
+
+function BlogPost() { // Remove params from the function signature
+    const { slug } = useParams(); // Access the slug using useParams
+    const [blogData, setBlogData] = useState<BlogPostData | null>(null);
+    const [isBookmarked, setIsBookmarked] = useState(false);
+    const [likes, setLikes] = useState(0);
+    const [comment, setComment] = useState('');
+    const [comments, setComments] = useState<Array<{ author: string; text: string; date: string }>>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [readingTime, setReadingTime] = useState(0);
 
     useEffect(() => {
         const fetchBlogPost = async () => {
+            setIsLoading(true);
             try {
-                const response = await fetch(`/api/blog/${params.slug}`)
-                if (!response.ok) throw new Error('Failed to fetch blog post')
-                const data = await response.json()
-                setBlogData(data)
+                // Now you can safely use 'slug' here
+                const post = await import(`../../../components/blogPostJSON/${slug}.json`);
+                setBlogData(post.default);
 
-                // Load saved states
-                const savedBookmark = localStorage.getItem(`bookmark-${params.slug}`)
-                if (savedBookmark) setIsBookmarked(savedBookmark === 'true')
-
-                const savedLikes = localStorage.getItem(`likes-${params.slug}`)
-                if (savedLikes) setLikes(parseInt(savedLikes, 10))
+                const words = post.default.content.introduction.split(' ').length +
+                    post.default.content.sections.reduce((acc: number, section: any) =>
+                        acc + section.content.split(' ').length, 0);
+                setReadingTime(Math.ceil(words / 200));
             } catch (err) {
-                console.error('Error loading blog post:', err)
-                setError('Failed to load blog post')
+                console.error('Error loading blog post:', err);
+                setError('Failed to load blog post');
             } finally {
-                setIsLoading(false)
+                setIsLoading(false);
             }
         }
 
-        fetchBlogPost()
-    }, [params.slug])
+        fetchBlogPost();
+    }, [slug]); // Depend on 'slug' for re-fetching
 
     const handleBookmark = () => {
         try {
-            setIsBookmarked(!isBookmarked)
+            setIsBookmarked(!isBookmarked);
             // Add localStorage persistence
-            localStorage.setItem(`bookmark-${params.slug}`, (!isBookmarked).toString())
+            localStorage.setItem(`bookmark-${slug}`, (!isBookmarked).toString());
         } catch (err) {
-            console.error('Error toggling bookmark:', err)
+            console.error('Error toggling bookmark:', err);
         }
     }
 
     const handleLike = () => {
         try {
-            setLikes(prev => prev + 1)
-            // Add localStorage persistence
-            localStorage.setItem(`likes-${params.slug}`, (likes + 1).toString())
+            setLikes(prev => prev + 1);
         } catch (err) {
-            console.error('Error updating likes:', err)
+            console.error('Error updating likes:', err);
         }
     }
 
     const handleCommentSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!comment.trim()) return
+        e.preventDefault();
+        if (!comment.trim()) return;
 
-        setIsLoading(true)
-        setError(null)
+        setIsLoading(true);
+        setError(null);
 
         try {
             // Add your API call here
@@ -77,34 +95,22 @@ export default function BlogPost({ params }: BlogPostPageProps) {
                 author: 'Guest User',
                 text: comment,
                 date: new Date().toLocaleDateString()
-            }])
-            setComment('')
+            }]);
+            setComment('');
         } catch (err) {
-            setError('Failed to post comment. Please try again.')
-            console.error('Error posting comment:', err)
+            setError('Failed to post comment. Please try again.');
+            console.error('Error posting comment:', err);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
 
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-gray-50 py-8">
-                <div className="container mx-auto px-4 text-center">
-                    <div className="animate-pulse">Loading...</div>
-                </div>
+    if (!blogData) {
+        return <div className="min-h-screen bg-gray-50 py-8">
+            <div className="container mx-auto px-4 text-center">
+                Loading...
             </div>
-        )
-    }
-
-    if (error || !blogData) {
-        return (
-            <div className="min-h-screen bg-gray-50 py-8">
-                <div className="container mx-auto px-4 text-center text-red-500">
-                    {error || 'Blog post not found'}
-                </div>
-            </div>
-        )
+        </div>
     }
 
     return (
@@ -121,7 +127,7 @@ export default function BlogPost({ params }: BlogPostPageProps) {
                             <div className="flex items-center space-x-4">
                                 <span>Author: {blogData.author}</span>
                                 <span>Published: {blogData.date}</span>
-                                <span>{blogData.readingTime} min read</span>
+                                <span>{readingTime} min read</span>
                             </div>
                             <button
                                 onClick={handleBookmark}
@@ -251,5 +257,7 @@ export default function BlogPost({ params }: BlogPostPageProps) {
                 </div>
             </div>
         </article>
-    )
+    );
 }
+
+export default BlogPost;
