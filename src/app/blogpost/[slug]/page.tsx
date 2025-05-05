@@ -9,6 +9,7 @@ interface PageProps {
         slug: string;
     };
     searchParams: { [key: string]: string | string[] | undefined };
+    slug: string;
 }
 
 const BlogPost = ({ params }: PageProps) => {
