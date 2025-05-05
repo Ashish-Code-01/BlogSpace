@@ -1,14 +1,17 @@
 'use client'
+
 import React, { useState, useEffect } from 'react'
 import { FaFacebookF, FaTwitter, FaLinkedinIn, FaRegBookmark, FaBookmark } from 'react-icons/fa'
 
-type Props = {
+// Update the Props interface to match Next.js requirements
+interface PageProps {
     params: {
-        slug: string
-    }
+        slug: string;
+    };
+    searchParams: { [key: string]: string | string[] | undefined };
 }
 
-const BlogPost = ({ params }: Props) => {
+const BlogPost = ({ params }: PageProps) => {
     const [blogData, setBlogData] = useState<any>(null)
     const [isBookmarked, setIsBookmarked] = useState(false)
     const [likes, setLikes] = useState(0)
@@ -19,20 +22,25 @@ const BlogPost = ({ params }: Props) => {
     const [readingTime, setReadingTime] = useState(0)
 
     useEffect(() => {
-        // Load blog post data based on slug
-        try {
-            const post = require(`../../../components/blogPostJSON/${params.slug}.json`)
-            setBlogData(post)
-            // Set initial reading time based on actual content
-            const words = post.content.introduction.split(' ').length +
-                post.content.sections.reduce((acc: number, section: any) =>
-                    acc + section.content.split(' ').length, 0)
-            const time = Math.ceil(words / 200)
-            setReadingTime(time)
-        } catch (err) {
-            console.error('Error loading blog post:', err)
-            setError('Failed to load blog post')
+        const fetchBlogPost = async () => {
+            setIsLoading(true)
+            try {
+                const post = await import(`@/data/blogPosts/${params.slug}.json`)
+                setBlogData(post.default)
+
+                const words = post.default.content.introduction.split(' ').length +
+                    post.default.content.sections.reduce((acc: number, section: any) =>
+                        acc + section.content.split(' ').length, 0)
+                setReadingTime(Math.ceil(words / 200))
+            } catch (err) {
+                console.error('Error loading blog post:', err)
+                setError('Failed to load blog post')
+            } finally {
+                setIsLoading(false)
+            }
         }
+
+        fetchBlogPost()
     }, [params.slug])
 
     const handleBookmark = () => {
