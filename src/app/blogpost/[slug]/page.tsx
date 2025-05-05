@@ -3,16 +3,16 @@
 import React, { useState, useEffect } from 'react'
 import { FaFacebookF, FaTwitter, FaLinkedinIn, FaRegBookmark, FaBookmark } from 'react-icons/fa'
 
-// Update the Props interface to match Next.js requirements
-interface PageProps {
-    params: {
-        slug: string;
+    // Define the correct props type for Next.js 13+ pages
+    type BlogPostProps = {
+        params: {
+            slug: string;
+        };
+        searchParams?: { [key: string]: string | string[] | undefined
     };
-    searchParams: { [key: string]: string | string[] | undefined };
-    slug: string;
 }
 
-const BlogPost = ({ params }: PageProps) => {
+const BlogPost = ({ params }: BlogPostProps) => {
     const [blogData, setBlogData] = useState<any>(null)
     const [isBookmarked, setIsBookmarked] = useState(false)
     const [likes, setLikes] = useState(0)
@@ -26,7 +26,7 @@ const BlogPost = ({ params }: PageProps) => {
         const fetchBlogPost = async () => {
             setIsLoading(true)
             try {
-                const post = await import(`@/data/blogPosts/${params.slug}.json`)
+                const post = await import(`../../../components/blogPostJSON/${params.slug}.json`)
                 setBlogData(post.default)
 
                 const words = post.default.content.introduction.split(' ').length +
